@@ -91,7 +91,7 @@
   };
 
   doDataGrab = function() {
-    return d3.json("/data/data.json", function(error, data) {
+    return d3.json("/data/data.json?dt=" + new Date().valueOf(), function(error, data) {
       var state, stateName, totals, _ref;
 
       console.log(error, data);

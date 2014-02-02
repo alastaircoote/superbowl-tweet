@@ -94,7 +94,7 @@ setStateDisplay = () ->
     $("#statesdisplay").empty().append lis
 
 doDataGrab = () ->
-    d3.json "/data/data.json", (error, data) ->
+    d3.json "/data/data.json?dt=" + new Date().valueOf(), (error, data) ->
         console.log error,data
         lastTen = oldLastTen.concat(data.lastTenSecs)
         oldLastTen = data.lastTenSecs
