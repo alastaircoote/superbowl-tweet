@@ -70,14 +70,16 @@ class State
 
     raiseUp: (z) =>
         @tween.stop()
-        @tween.to({x: @shape.position.x, y: @shape.position.y, z: -30},200).start()
+        target = @shape.position.z-30
+        if target < -100 then target = -100
+        @tween.to({x: @shape.position.x, y: @shape.position.y, z: target},200).start()
 
     setColorProgression: (i) =>
         @material.setValues
             color: parseInt '0x' + @broncoColor.towards(@seahawkColor,i).toString().substr(1)
 
     tweenComplete: (d) =>
-        if @shape.position.z == -30
+        if @shape.position.z <= -30
             @tween.to({x: @shape.position.x, y: @shape.position.y, z: 0},1500).start()
 
-map.State = State
+map.State3D = State

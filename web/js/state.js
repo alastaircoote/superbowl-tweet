@@ -84,11 +84,17 @@
     };
 
     State.prototype.raiseUp = function(z) {
+      var target;
+
       this.tween.stop();
+      target = this.shape.position.z - 30;
+      if (target < -100) {
+        target = -100;
+      }
       return this.tween.to({
         x: this.shape.position.x,
         y: this.shape.position.y,
-        z: -30
+        z: target
       }, 200).start();
     };
 
@@ -99,7 +105,7 @@
     };
 
     State.prototype.tweenComplete = function(d) {
-      if (this.shape.position.z === -30) {
+      if (this.shape.position.z <= -30) {
         return this.tween.to({
           x: this.shape.position.x,
           y: this.shape.position.y,
@@ -112,6 +118,6 @@
 
   })();
 
-  map.State = State;
+  map.State3D = State;
 
 }).call(this);

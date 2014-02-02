@@ -1,25 +1,45 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <style>
-        .county-boundary {
-            fill:transparent;
-            stroke:#000;
-        }
-        </style>
-
+        <link rel="stylesheet" href="webfonts/stylesheet.css" type="text/css"/>
+        <link rel="stylesheet" href="styles.css" type="text/css"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     </head>
     <body>
-        <div id="webgl"></div>
+            <div id="fixer">
+            <div id="mapholder">
+             <h1> The Great Tweet-o-meter</h1>
+             <h2><span class="broncos">Broncos</span> vs <span class="seahawks">Seahawks</span></h2>
+            <div class="svgholder"></div>
+            </div>
+            <div id="tweetbox">
+                <div id="tweetBroncos">Claim your state</div>
+                <div id="tweetSeahawks">Claim your state</div>
+            </div>
+            </div>
+            
+            <ul id="statesdisplay"></ul>
+            
+      
+            <div id="locating">
+                <div class="inner">
+                 Locating you...
+                </div>
+            </div>
         <script>window.map = {}</script>
-        <script src="http://d3js.org/d3.v3.min.js"></script>
-        <script src="http://d3js.org/topojson.v1.min.js"></script>
+        <script src="js/lib/jquery.js"></script>
+        <script src="js/lib/d3.min.js"></script>
+        <script src="js/lib/topojson.js"></script>
         <script src="js/lib/three.min.js"></script>
         <script src="js/lib/three.orbit.js"></script>
         <script src="js/lib/chromath.min.js"></script>
         <script src="js/lib/tween.js"></script>
+        <script src="js/lib/geojson-util.js"></script>
         <script src="js/3dview.js"></script>
+        <script src="js/2dview.js"></script>
         <script src="js/state.js"></script>
+        <script src="js/state2d.js"></script>
+        <script src="js/tweet.js"></script>
         <script src="js/main.js"></script>
     </body>
 </html>
