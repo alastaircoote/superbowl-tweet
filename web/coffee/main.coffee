@@ -95,6 +95,7 @@ setStateDisplay = () ->
 
 doDataGrab = () ->
     d3.json "/data/data.json", (error, data) ->
+        console.log error,data
         lastTen = oldLastTen.concat(data.lastTenSecs)
         oldLastTen = data.lastTenSecs
         

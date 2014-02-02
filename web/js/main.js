@@ -94,6 +94,7 @@
     return d3.json("/data/data.json", function(error, data) {
       var state, stateName, totals, _ref;
 
+      console.log(error, data);
       lastTen = oldLastTen.concat(data.lastTenSecs);
       oldLastTen = data.lastTenSecs;
       setTimeout(doDataGrab, 1000 * 10);

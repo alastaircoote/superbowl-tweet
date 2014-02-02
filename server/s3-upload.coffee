@@ -52,9 +52,9 @@ doUpload = () ->
                     require("fs").writeFile "../web/data/data.json", dataString
                     setTimeout doUpload, 1000 * 10
                     return
-                    
+
                 req = s3.put "/data/data.json", {
-                    "Content-Length": dataString.length
+                    #"Content-Length": dataString.length
                     "Content-Type": "application/json"
                     'x-amz-acl': 'public-read'
                 }
