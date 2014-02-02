@@ -11,57 +11,15 @@
     </head>
     <body>
         <div id="webgl"></div>
+        <script>window.map = {}</script>
         <script src="http://d3js.org/d3.v3.min.js"></script>
         <script src="http://d3js.org/topojson.v1.min.js"></script>
-        <script src="js/three.min.js"></script>
-        <script src="js/three.trackball.js"></script>
-        <script src="js/d3bridge.js"></script>
+        <script src="js/lib/three.min.js"></script>
+        <script src="js/lib/three.orbit.js"></script>
+        <script src="js/lib/chromath.min.js"></script>
+        <script src="js/lib/tween.js"></script>
         <script src="js/3dview.js"></script>
-
-        <script>
-
-        var test = new D3Bridge()
-
-        console.log(test)
-
-        var width = 960,
-            height = 500;
-
-        var projection = d3.geo.albersUsa()
-            .scale(1000)
-            .translate([width / 2, height / 2]);
-
-        var path = d3.geo.path()
-            .projection(projection);
-
-        var svg = d3.select("body").append("svg")
-            .attr("width", width)
-            .attr("height", height);
-
-        d3.json("/topo-states.json", function(error, us) {
-          /*svg.insert("path", ".graticule")
-              .datum(topojson.feature(us, us.objects.land))
-              .attr("class", "land")
-              .attr("d", path);*/
-            console.log(error,us)
-            svg.selectAll(".county")
-            .data(topojson.feature(us, us.objects["states"]).features)
-            .enter()
-                .append("path")
-                .attr("class", "county")
-                .attr("d",path)
-
-
-          /*svg.insert("path", ".graticule")
-              .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
-              .attr("class", "state-boundary")
-              .attr("d", path);*/
-
-              window.addShapes(document.getElementsByClassName("county"))
-        });
-
-        d3.select(self.frameElement).style("height", height + "px");
-
-        </script>
+        <script src="js/state.js"></script>
+        <script src="js/main.js"></script>
     </body>
 </html>

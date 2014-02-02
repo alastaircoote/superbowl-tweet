@@ -8,7 +8,7 @@ export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 
 sudo apt-get update
-sudo apt-get -y install postgresql-9.1-postgis unzip openjdk-6-jre solr-tomcat
+sudo apt-get -y install postgresql-9.1-postgis unzip openjdk-6-jre
 
 sudo -u postgres pgsql -f /vagrant/template.sql
 
@@ -20,16 +20,16 @@ sudo -u postgres createdb gisgraphy -T 'template_postgis'
 sudo -u postgres psql -c "CREATE USER dbuser WITH PASSWORD 'db'"
 sudo -u postgres psql -c "GRANT ALL ON DATABASE gisgraphy TO dbuser"
 
-unzip /vagrant/gisgraphy-3.0-beta1.zip -d ~/
+unzip /vagrant/gisgraphy-3.0-beta1.zip -d /home/vagrant/
 
 export PGPASSWORD=db
-cd ~/gisgraphy-3.0-beta1
+cd /home/vagrant/gisgraphy-3.0-beta1
 psql -U dbuser -h 127.0.0.1 -d gisgraphy -f sql/create_tables.sql
 psql -U dbuser -h 127.0.0.1 -d gisgraphy -f sql/insert_users.sql
 
-cp /vagrant/jdbc.properties ~/gisgraphy-3.0-beta1/webapps/ROOT/WEB-INF/classes/
-
-
+cp /vagrant/jdbc.properties /home/vagrant/gisgraphy-3.0-beta1/webapps/ROOT/WEB-INF/classes/
+chmod +x launch.sh
+sudo chown -R vagrant *
 SCRIPT
 
 
@@ -48,10 +48,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
+  #config.vm.customize ["modifyvm", :id, "--ioapic", "on"]
 
   config.vm.provision "shell", inline: $script
   config.vm.network "forwarded_port", guest: 8080, host: 8080
   config.vm.network "forwarded_port", guest: 8081, host: 8081
+  config.vm.network "forwarded_port", guest: 5432, host: 6000
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
