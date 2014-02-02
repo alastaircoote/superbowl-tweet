@@ -54,7 +54,7 @@ doUpload = () ->
                     return
 
                 req = s3.put "/data/data.json", {
-                    #"Content-Length": dataString.length
+                    "Content-Length": new Buffer(dataString).length
                     "Content-Type": "application/json"
                     'x-amz-acl': 'public-read'
                 }
