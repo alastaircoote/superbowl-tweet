@@ -61,7 +61,7 @@ doUpload = () ->
 
                 req.on "response", (res) ->
                     console.log "uploaded"
-                    console.log res
+                    console.log res.statusCode
                     #setTimeout doUpload, 1000 * 10
 
                 req.end(dataString)
