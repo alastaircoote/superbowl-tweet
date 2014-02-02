@@ -5,12 +5,12 @@ Config = require "./config.json"
 
 
 twitter = new Twitter
-    consumerKey: 'lT8Jq0lBrYB8Rhv6N0CNtA',
-    consumerSecret: '0fo3XFCYf1dpMX2QSnnawiHhDc4N6bGARqsf5UF0xbI',
+    consumerKey: Config.twitterKey,
+    consumerSecret: Config.twitterSecret,
     callback: 'http://yoururl.tld/something'
 
-accessToken = "18059424-ECTDnGtruPrtZAO9gaqODSc6iwS7sjomCsgtXw7wS"
-tokenSecret = "nRBNtKjL8ybZGH2ojxPvYMD0kur3Fp0ldO3vfvuTic074"
+accessToken = Config.twitterAccessToken
+tokenSecret = Config.twitterTokenSecret
 
 twitter.getStream "filter", {track:"broncos,seahawks"},accessToken,tokenSecret, (err,tweet) ->
     if err then return console.log err;

@@ -48,10 +48,11 @@ doUpload = () ->
                     stateTotals: states
 
                 dataString = JSON.stringify(dataTogether)
-
-                require("fs").writeFile "../web/data/data.json", dataString
-                setTimeout doUpload, 1000 * 10
-                return
+                if Config.saveLocally
+                    require("fs").writeFile "../web/data/data.json", dataString
+                    setTimeout doUpload, 1000 * 10
+                    return
+                    
                 req = s3.put "/data/data.json", {
                     "Content-Length": dataString.length
                     "Content-Type": "application/json"
