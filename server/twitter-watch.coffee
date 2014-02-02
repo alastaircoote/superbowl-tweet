@@ -14,7 +14,7 @@ tokenSecret = Config.twitterTokenSecret
 
 twitter.getStream "filter", {track:"broncos,seahawks"},accessToken,tokenSecret, (err,tweet) ->
     if err then return console.log err;
-    console.log tweet.created_at
+
     # No location at all
     if tweet.user.location == "" then return
     urlToGet = Config.geocodeUrl
@@ -27,6 +27,7 @@ twitter.getStream "filter", {track:"broncos,seahawks"},accessToken,tokenSecret, 
         json:true
         
     }, (err,response,body) ->
+        if err then console.log err
         if !body.response?.docs || body.response.docs.length == 0
             console.log "no results"
             return
