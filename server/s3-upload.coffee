@@ -21,7 +21,6 @@ doUpload = () ->
         """,[new Date(tenSecsAgo)], (err,result) ->
             if err then throw err
             mapped = result.rows.map (row) ->
-                console.log Math.round(Math.random() * 1000)
                 row.saved_at = new Date(row.saved_at).valueOf() + Math.round(Math.random() * 1000)
                 return row
 
@@ -61,8 +60,7 @@ doUpload = () ->
 
                 req.on "response", (res) ->
                     console.log "uploaded"
-                    console.log res.statusCode
-                    #setTimeout doUpload, 1000 * 10
+                    setTimeout doUpload, 1000 * 10
 
                 req.end(dataString)
                    
