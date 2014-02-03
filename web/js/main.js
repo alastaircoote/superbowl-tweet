@@ -68,11 +68,15 @@
       });
     }
     stateArray.sort(function(a, b) {
-      return (b.broncos + b.seahawks) - (a.broncos + a.seahawks);
+      var aTop, bTop;
+
+      aTop = a.broncos > a.seahawks ? a.broncos : a.seahawks;
+      bTop = b.broncos > b.seahawks ? b.broncos : b.seahawks;
+      return bTop - aTop;
     });
-    maxTweets = stateArray[0].broncos;
+    maxTweets = stateArray[0].broncos + 200;
     if (stateArray[0].seahawks > maxTweets) {
-      maxTweets = stateArray[0].seahawks;
+      maxTweets = stateArray[0].seahawks + 200;
     }
     lis = [];
     for (_i = 0, _len = stateArray.length; _i < _len; _i++) {
@@ -81,9 +85,9 @@
       h3 = $("<h3>").html(state.name);
       ident = state.name.toLowerCase().replace(/\s/g, "_");
       shBar = $("<div class='bar seahawks " + ident + "'/>");
-      shBar.css("width", Math.round(state.seahawks / maxTweets * 100) + "%");
-      brBar = $("<div class='bar broncos'/>");
-      brBar.css("width", Math.round(state.broncos / maxTweets * 100) + "%");
+      shBar.css("width", (state.seahawks / maxTweets * 100) + "%");
+      brBar = $("<div class='bar broncos " + ident + "'/>");
+      brBar.css("width", (state.broncos / maxTweets * 100) + "%");
       li.append(h3, shBar, brBar);
       lis.push(li);
     }
@@ -91,33 +95,22 @@
   };
 
   doDataGrab = function() {
+    setTimeout(doDataGrab, 1000 * 5);
     return d3.json("/data/data.json?dt=" + new Date().valueOf(), function(error, data) {
       var state, stateName, totals, _ref;
 
-      console.log(error, data);
       lastTen = oldLastTen.concat(data.lastTenSecs);
       oldLastTen = data.lastTenSecs;
-      setTimeout(doDataGrab, 1000 * 10);
       if (stateData === null) {
-        console.log("newdata", data.stateTotals);
         _ref = data.stateTotals;
         for (state in _ref) {
           totals = _ref[state];
           stateName = state.toLowerCase();
-          if (stateName === "colorado") {
-            console.log(totals.broncos, totals.seahawks, totals.broncos / (totals.broncos + totals.seahawks));
-          }
-          if (!totals.broncos) {
-            map.states[stateName].setColorProgression(1);
-          } else if (!totals.seahawks) {
-            map.states[stateName].setColorProgression(0);
-          } else {
-            map.states[stateName].setColorProgression(totals.seahawks / (totals.broncos + totals.seahawks));
-          }
+          map.states[stateName].setColorProgression(totals.seahawks, totals.broncos);
         }
         stateData = data.stateTotals;
-        console.log(stateData);
-        return setStateDisplay();
+        setStateDisplay();
+        return doAnimate();
       }
     });
   };
@@ -125,7 +118,7 @@
   lastTime = Date.now() - 10 * 1000;
 
   doAnimate = function() {
-    var ident, newTweets, targetState, timeToCheck, tweet, _i, _len, _results;
+    var i, ident, newTweets, targetState, timeToCheck, tweet, _i, _len, _results;
 
     timeToCheck = Date.now() - 10 * 1000;
     newTweets = lastTen.filter(function(t) {
@@ -137,30 +130,26 @@
     for (_i = 0, _len = newTweets.length; _i < _len; _i++) {
       tweet = newTweets[_i];
       targetState = tweet.state.toLowerCase();
-      map.states[targetState].raiseUp();
       if (tweet.keyword) {
         stateData[tweet.state][tweet.keyword]++;
         if (stateData[tweet.state][tweet.keyword] > maxTweets) {
           setStateDisplay();
         } else {
           ident = targetState.replace(/\s/g, "_");
-          $("." + ident + "." + tweet.keyword).css("width", Math.round(state[keyword] / maxTweets * 100) + "%");
+          $("." + ident + "." + tweet.keyword).css("width", (stateData[tweet.state][tweet.keyword] / maxTweets * 100) + "%");
         }
-        _results.push(console.log("upped " + tweet.keyword + " in " + tweet.state));
-      } else {
-        _results.push(void 0);
       }
+      i = stateData[tweet.state].seahawks / (stateData[tweet.state].broncos + stateData[tweet.state].seahawks);
+      _results.push(map.states[targetState].raiseUp(stateData[tweet.state].seahawks || 0, stateData[tweet.state].broncos || 0, tweet.keyword));
     }
     return _results;
   };
-
-  doAnimate();
 
   $("#tweetBroncos").on("click", function() {
     return map.sendTweet("Broncos");
   });
 
-  $("#tweetBroncos").on("click", function() {
+  $("#tweetSeahawks").on("click", function() {
     return map.sendTweet("Seahawks");
   });
 

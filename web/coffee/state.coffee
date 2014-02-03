@@ -68,15 +68,19 @@ class State
 
         return mesh
 
-    raiseUp: (z) =>
+    raiseUp: (a, b) =>
+        @setColorProgression(a, b)
         @tween.stop()
         target = @shape.position.z-30
         if target < -100 then target = -100
         @tween.to({x: @shape.position.x, y: @shape.position.y, z: target},200).start()
 
-    setColorProgression: (i) =>
+    setColorProgression: (a,b) =>
+        color = new Chromath("#cccccc")
+        if a > b then color = color.towards(@seahawkColor, a / (a+b))
+        if b > a then color = color.towards(@broncoColor, b / (a+b))
         @material.setValues
-            color: parseInt '0x' + @broncoColor.towards(@seahawkColor,i).toString().substr(1)
+            color: parseInt '0x' + color.toString().substr(1)
 
     tweenComplete: (d) =>
         if @shape.position.z <= -30

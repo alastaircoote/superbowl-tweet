@@ -24,14 +24,17 @@ doUpload = () ->
                 row.saved_at = new Date(row.saved_at).valueOf() + Math.round(Math.random() * 1000)
                 return row
 
+            oneHourAgo = new Date().valueOf() - (1000 * 60 * 60)
+
             client.query """
             select count(*), keyword, state_name as state from tweets
             where tweets.saved_at < $1
+            and tweets.saved_at > $2
             and state_name is not null
             group by state, tweets.keyword
 
             
-            """,[new Date(tenSecsAgo)], (err,result) ->
+            """,[new Date(tenSecsAgo), new Date(oneHourAgo)], (err,result) ->
                 if err then throw err
                 states = {}
 

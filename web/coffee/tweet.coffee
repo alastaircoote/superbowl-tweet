@@ -1,7 +1,7 @@
 map.sendTweet = (team) ->
     locSuccess = (loc) ->
-        $("#locating").hide()
-        $("#mapholder").css "visibility", ""
+        #$("#locating").hide()
+        #$("#mapholder").css "visibility", ""
         locGeoJson = {
             type: "Point"
             coordinates: [loc.coords.longitude, loc.coords.latitude]

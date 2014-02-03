@@ -69,10 +69,12 @@ setStateDisplay = () ->
             seahawks: data.seahawks
         }
     stateArray.sort (a,b) ->
-        (b.broncos + b.seahawks) - (a.broncos + a.seahawks)
+        aTop = if a.broncos > a.seahawks then a.broncos else a.seahawks
+        bTop = if b.broncos > b.seahawks then b.broncos else b.seahawks
+        bTop - aTop
 
-    maxTweets = stateArray[0].broncos
-    if stateArray[0].seahawks > maxTweets then maxTweets = stateArray[0].seahawks
+    maxTweets = stateArray[0].broncos + 200
+    if stateArray[0].seahawks > maxTweets then maxTweets = stateArray[0].seahawks + 200
 
     lis = []
     for state in stateArray
@@ -82,10 +84,10 @@ setStateDisplay = () ->
         ident = state.name.toLowerCase().replace(/\s/g,"_")
 
         shBar = $("<div class='bar seahawks #{ident}'/>")
-        shBar.css "width", Math.round(state.seahawks / maxTweets * 100) + "%"
+        shBar.css "width", (state.seahawks / maxTweets * 100) + "%"
 
-        brBar = $("<div class='bar broncos'/>")
-        brBar.css "width", Math.round(state.broncos/ maxTweets * 100) + "%"
+        brBar = $("<div class='bar broncos #{ident}'/>")
+        brBar.css "width", (state.broncos/ maxTweets * 100) + "%"
 
         li.append h3, shBar, brBar
 
@@ -94,26 +96,24 @@ setStateDisplay = () ->
     $("#statesdisplay").empty().append lis
 
 doDataGrab = () ->
+    setTimeout doDataGrab, 1000*5
     d3.json "/data/data.json?dt=" + new Date().valueOf(), (error, data) ->
-        console.log error,data
         lastTen = oldLastTen.concat(data.lastTenSecs)
         oldLastTen = data.lastTenSecs
         
-        setTimeout doDataGrab, 1000*10
-
+    
         if stateData == null
-            console.log "newdata", data.stateTotals
             for state, totals of data.stateTotals
                 stateName = state.toLowerCase()
-                if stateName == "colorado" then console.log totals.broncos, totals.seahawks, totals.broncos / (totals.broncos + totals.seahawks)
-
-                if !totals.broncos then map.states[stateName].setColorProgression 1
-                else if !totals.seahawks then map.states[stateName].setColorProgression 0
-                else map.states[stateName].setColorProgression totals.seahawks / (totals.broncos + totals.seahawks)
+                
+                #if !totals.broncos then map.states[stateName].setColorProgression 1
+                #else if !totals.seahawks then map.states[stateName].setColorProgression 0
+                map.states[stateName].setColorProgression totals.seahawks, totals.broncos
 
             stateData = data.stateTotals
-            console.log stateData
             setStateDisplay()
+            #lastTime = lastTen[0].saved_at - 1
+            doAnimate()
 
 
 
@@ -125,9 +125,11 @@ doAnimate = () ->
     lastTime = timeToCheck
     setTimeout doAnimate, 100
 
+
+
     for tweet in newTweets
         targetState = tweet.state.toLowerCase()
-        map.states[targetState].raiseUp()
+        
         if tweet.keyword
 
             stateData[tweet.state][tweet.keyword]++
@@ -136,10 +138,12 @@ doAnimate = () ->
                 setStateDisplay()
             else
                 ident = targetState.replace(/\s/g,"_")
-                $(".#{ident}.#{tweet.keyword}").css "width", Math.round(state[keyword] / maxTweets * 100) + "%"
-            console.log "upped #{tweet.keyword} in #{tweet.state}"
+                $(".#{ident}.#{tweet.keyword}").css "width",(stateData[tweet.state][tweet.keyword] / maxTweets * 100) + "%"
 
-doAnimate()
+        i = stateData[tweet.state].seahawks / (stateData[tweet.state].broncos + stateData[tweet.state].seahawks)
+
+        map.states[targetState].raiseUp(stateData[tweet.state].seahawks || 0, stateData[tweet.state].broncos || 0, tweet.keyword)
+
 
 $("#tweetBroncos").on "click", () -> map.sendTweet "Broncos"
-$("#tweetBroncos").on "click", () -> map.sendTweet "Seahawks"
+$("#tweetSeahawks").on "click", () -> map.sendTweet "Seahawks"

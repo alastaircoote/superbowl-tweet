@@ -6,8 +6,6 @@
     locSuccess = function(loc) {
       var locGeoJson, state, text, _i, _len, _ref;
 
-      $("#locating").hide();
-      $("#mapholder").css("visibility", "");
       locGeoJson = {
         type: "Point",
         coordinates: [loc.coords.longitude, loc.coords.latitude]

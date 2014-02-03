@@ -15,11 +15,22 @@
       setTimeout(this.raiseUp, 1000 * Math.random());
     }
 
-    State2D.prototype.setColorProgression = function(i) {
-      return this.shape.style("fill", this.broncoColor.towards(this.seahawkColor, i).toString());
+    State2D.prototype.setColorProgression = function(a, b) {
+      var color;
+
+      color = new Chromath("#cccccc");
+      if (a > b) {
+        color = color.towards(this.seahawkColor, a / (a + b));
+      }
+      if (b > a) {
+        color = color.towards(this.broncoColor, b / (a + b));
+      }
+      return this.shape.style("fill", color.toString());
     };
 
-    State2D.prototype.raiseUp = function() {
+    State2D.prototype.raiseUp = function(colorProgA, colorProgB) {
+      this.colorProgA = colorProgA;
+      this.colorProgB = colorProgB;
       this.shape.on("webkitTransitionEnd", this.changeColor);
       return this.shape.style({
         "-webkit-transition": "-webkit-transform 0.2s ease-in",
@@ -35,6 +46,9 @@
         "-webkit-transition": "none",
         "-webkit-transform": "rotateX(270deg)"
       });
+      if (this.colorProg) {
+        this.setColorProgression(this.colorProgA, this.colorProgB);
+      }
       return setTimeout(function() {
         return _this.shape.style({
           "-webkit-transition": "-webkit-transform 0.2s ease-out",

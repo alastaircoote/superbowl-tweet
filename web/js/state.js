@@ -83,9 +83,10 @@
       return mesh;
     };
 
-    State.prototype.raiseUp = function(z) {
+    State.prototype.raiseUp = function(a, b) {
       var target;
 
+      this.setColorProgression(a, b);
       this.tween.stop();
       target = this.shape.position.z - 30;
       if (target < -100) {
@@ -98,9 +99,18 @@
       }, 200).start();
     };
 
-    State.prototype.setColorProgression = function(i) {
+    State.prototype.setColorProgression = function(a, b) {
+      var color;
+
+      color = new Chromath("#cccccc");
+      if (a > b) {
+        color = color.towards(this.seahawkColor, a / (a + b));
+      }
+      if (b > a) {
+        color = color.towards(this.broncoColor, b / (a + b));
+      }
       return this.material.setValues({
-        color: parseInt('0x' + this.broncoColor.towards(this.seahawkColor, i).toString().substr(1))
+        color: parseInt('0x' + color.toString().substr(1))
       });
     };
 

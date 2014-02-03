@@ -5,10 +5,13 @@ class State2D
         @shape = d3.select(shape)
         setTimeout @raiseUp, 1000 * Math.random()
 
-    setColorProgression: (i) =>
-        @shape.style "fill", @broncoColor.towards(@seahawkColor,i).toString()
+    setColorProgression: (a,b) =>
+        color = new Chromath("#cccccc")
+        if a > b then color = color.towards(@seahawkColor, a / (a+b))
+        if b > a then color = color.towards(@broncoColor, b / (a+b))
+        @shape.style "fill", color.toString()
 
-    raiseUp: () =>
+    raiseUp: (@colorProgA, @colorProgB) =>
         @shape.on "webkitTransitionEnd", @changeColor
         @shape.style {
             "-webkit-transition": "-webkit-transform 0.2s ease-in"
@@ -21,6 +24,7 @@ class State2D
             "-webkit-transition": "none"
             "-webkit-transform": "rotateX(270deg)"
         }
+        if @colorProg then @setColorProgression(@colorProgA, @colorProgB)
         setTimeout () =>
             @shape.style {
                 "-webkit-transition": "-webkit-transform 0.2s ease-out"
