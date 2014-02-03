@@ -24,7 +24,7 @@ doUpload = () ->
                 row.saved_at = new Date(row.saved_at).valueOf() + Math.round(Math.random() * 1000)
                 return row
 
-            oneHourAgo = new Date().valueOf() - (1000 * 60 * 60)
+            oneHourAgo = new Date().valueOf() - (1000 * 60 * 10)
 
             client.query """
             select count(*), keyword, state_name as state from tweets
